@@ -80,12 +80,23 @@ detector_white = cv2.SimpleBlobDetector_create(bdp_white)
 
 def white_dice(img):
     ''' YOUR FILTERS GO HERE '''
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    mask = cv2.adaptiveThreshold(img, maxValue=255, 
-        adaptiveMethod=cv2.ADAPTIVE_THRESH_GAUSSIAN_C, thresholdType=cv2.THRESH_BINARY_INV, blockSize=10, C=10)
-        # check blocksize and C
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(img, (185, 0, 0), (255, 255, 255))
+    mask = np.bitwise_not(mask, np.zeros())
     
-    return 0
+    bdp = cv2.SimpleBlobDetector_Params()
+    bdp.filterByArea = False
+    bdp.filterByConvexity = False
+    bdp.filterByCircularity = True
+    bdp.filterByInertia = False
+    bdp.filterByColor = True
+    bdp.blobColor = 255
+    bdp.minCircularity = 0.5
+    bdp.maxCircularity = 1
+    detector = cv2.SimpleBlobDetector_create(bdp)
+    points = detector.detect(mask)
+
+    return points
 
 bdp_color = cv2.SimpleBlobDetector_Params()
 ''' UPDATE THESE PARAMETERS FOR YOUR COLORED DICE BLOB DETECTION '''
@@ -95,7 +106,23 @@ detector_color = cv2.SimpleBlobDetector_create(bdp_color)
 
 def colored_dice(img):
     ''' YOUR FILTERS GO HERE '''
-    return 0
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(img, (185, 0, 0), (255, 255, 255))
+    mask = np.bitwise_not(mask, np.zeros())
+    
+    bdp = cv2.SimpleBlobDetector_Params()
+    bdp.filterByArea = False
+    bdp.filterByConvexity = False
+    bdp.filterByCircularity = True
+    bdp.filterByInertia = False
+    bdp.filterByColor = True
+    bdp.blobColor = 255
+    bdp.minCircularity = 0.5
+    bdp.maxCircularity = 1
+    detector = cv2.SimpleBlobDetector_create(bdp)
+    points = detector.detect(mask)
+
+    return points
 
 frame_count = 0
 try:
